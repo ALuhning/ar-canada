@@ -1,10 +1,25 @@
 # 3D Models
 
-This directory contains GLTF/GLB 3D models for AR experiences.
+## ⚠️ Status: PLACEHOLDER DIRECTORY
 
-## Files
+This directory is **ready for 3D models** but currently uses **geometric placeholders** in the AR viewer.
 
-Place your 3D model files here:
+**Good news:** The AR experience **works right now** with simple shapes! No downloads needed.
+
+## 📦 What's Currently Used
+
+The AR viewer (`src/pages/ARViewer.jsx`) uses:
+- **Beaver** → Red rotating box + 🦫 emoji
+- **Maple Leaf** → Animated plane + 🍁 emoji  
+- **Hockey** → Cylinder (puck) + 🏒 emoji
+- **Canadarm** → Rotating box + 🚀 emoji
+- **Poutine** → Cylinder + steam + 🍔 emoji
+
+**These work great for testing and demos!**
+
+## 🎨 Want Real 3D Models? (Optional)
+
+Place your GLTF/GLB model files here:
 - `beaver.gltf` - Animated beaver model
 - `maple-leaves.gltf` - Falling maple leaves
 - `hockey-rink.gltf` - Mini hockey rink

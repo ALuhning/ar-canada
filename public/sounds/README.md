@@ -1,9 +1,14 @@
 # Audio Files
 
-This directory contains sound effects for AR experiences.
+## ⚠️ Status: PLACEHOLDER DIRECTORY
 
-## Files
+This directory is **ready for sound effects** but they're currently **optional**.
 
+**The AR experience works great without sounds!** Add them later for extra polish.
+
+## 🔊 Planned Sound Files (Optional)
+
+When you're ready to add audio:
 - `beaver-gnaw.mp3` - Beaver gnawing wood sound
 - `wind-rustle.mp3` - Wind through maple leaves
 - `goal-horn.mp3` - Hockey goal horn
