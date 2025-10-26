@@ -33,11 +33,37 @@ function ARViewer() {
     // Force A-Frame to process the scene after it's added to DOM
     if (arReady && card) {
       setTimeout(() => {
-        const scene = document.querySelector('a-scene')
-        if (scene && scene.hasLoaded) {
-          console.log('A-Frame scene loaded successfully')
+        const container = document.getElementById('ar-scene-container')
+        if (container && !container.querySelector('a-scene')) {
+          // Inject A-Frame scene directly into DOM
+          const sceneHTML = `
+            <a-scene
+              embedded
+              arjs="sourceType: webcam; debugUIEnabled: false;"
+              vr-mode-ui="enabled: false"
+              renderer="logarithmicDepthBuffer: true;"
+            >
+              <a-marker preset="hiro">
+                <a-box
+                  position="0 0.5 0"
+                  scale="0.8 0.8 0.8"
+                  material="color: red;"
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 3000"
+                ></a-box>
+                <a-text
+                  value="${card.emoji}"
+                  align="center"
+                  position="0 1.2 0"
+                  scale="2 2 2"
+                ></a-text>
+              </a-marker>
+              <a-entity camera position="0 0 0"></a-entity>
+            </a-scene>
+          `
+          container.innerHTML = sceneHTML
+          console.log('A-Frame scene injected into DOM')
         }
-      }, 1000)
+      }, 100)
     }
   }, [arReady, card])
 
@@ -88,29 +114,7 @@ function ARViewer() {
         </Link>
       </div>
 
-      <a-scene
-        embedded
-        arjs="sourceType: webcam; debugUIEnabled: false;"
-        vr-mode-ui="enabled: false"
-        renderer="logarithmicDepthBuffer: true;"
-      >
-        <a-marker preset="hiro">
-          <a-box
-            position="0 0.5 0"
-            scale="0.8 0.8 0.8"
-            material="color: red;"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 3000"
-          ></a-box>
-          <a-text
-            value={card.emoji}
-            align="center"
-            position="0 1.2 0"
-            scale="2 2 2"
-          ></a-text>
-        </a-marker>
-
-        <a-entity camera position="0 0 0"></a-entity>
-      </a-scene>
+      <div id="ar-scene-container" style={{ width: '100%', height: '100%' }}></div>
 
       <div className="ar-caption">
         <h2>{card.emoji} {card.name}</h2>
