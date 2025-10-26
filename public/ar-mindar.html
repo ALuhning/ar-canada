@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mind AR - Discover Canada</title>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+  <title>WebXR AR - Discover Canada</title>
   <style>
     body {
       margin: 0;
@@ -76,12 +75,13 @@
 
   <div id="info">
     <h3><span id="card-emoji">🇨🇦</span> <span id="card-name">Canada</span></h3>
-    <p>📷 Point camera at any flat surface or image</p>
-    <p style="font-size: 0.8em; opacity: 0.6;">Mind AR - No markers needed!</p>
+    <p>📷 Tap "Start AR" then tap on any surface to place content</p>
+    <p style="font-size: 0.8em; opacity: 0.6;">WebXR - No markers needed!</p>
   </div>
 
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+    import { ARButton } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/webxr/ARButton.js';
     
     // Get URL parameters
     const urlParams = new URLSearchParams(window.location.search);
@@ -94,29 +94,39 @@
 
     const start = async () => {
       try {
-        // Initialize Mind AR without custom targets (easier for demo)
-        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-          container: document.querySelector("#container"),
-          uiLoading: "no",
-          uiScanning: "no",
-          uiError: "no",
+        const container = document.querySelector("#container");
+        
+        // Setup Three.js scene
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+        
+        const renderer = new THREE.WebGLRenderer({ 
+          antialias: true, 
+          alpha: true 
         });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.xr.enabled = true;
+        container.appendChild(renderer.domElement);
 
-        const {renderer, scene, camera} = mindarThree;
+        // Add AR button
+        const arButton = ARButton.createButton(renderer, {
+          requiredFeatures: ['hit-test'],
+          optionalFeatures: ['dom-overlay'],
+          domOverlay: { root: document.body }
+        });
+        document.body.appendChild(arButton);
 
-        // Add ambient light
+        // Add lights
         const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
         scene.add(light);
 
-        // Create anchor (target 0 is default)
-        const anchor = mindarThree.addAnchor(0);
-
         // Create a red spinning box
-        const geometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+        const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
         const material = new THREE.MeshPhongMaterial({color: 0xff0000});
         const box = new THREE.Mesh(geometry, material);
-        box.position.set(0, 0.15, 0);
-        anchor.group.add(box);
+        box.position.set(0, 0.05, -0.3);
+        scene.add(box);
 
         // Create text sprite for emoji
         const canvas = document.createElement('canvas');
@@ -131,31 +141,32 @@
         const texture = new THREE.CanvasTexture(canvas);
         const spriteMaterial = new THREE.SpriteMaterial({map: texture});
         const sprite = new THREE.Sprite(spriteMaterial);
-        sprite.position.set(0, 0.5, 0);
-        sprite.scale.set(0.5, 0.5, 0.5);
-        anchor.group.add(sprite);
+        sprite.position.set(0, 0.15, -0.3);
+        sprite.scale.set(0.1, 0.1, 0.1);
+        scene.add(sprite);
+
+        document.getElementById('loading').style.display = 'none';
 
         // Animation loop
-        const clock = new THREE.Clock();
-        await mindarThree.start();
-        document.getElementById('loading').style.display = 'none';
-        
         renderer.setAnimationLoop(() => {
-          const delta = clock.getDelta();
-          box.rotation.y += delta;
+          box.rotation.y += 0.01;
           renderer.render(scene, camera);
         });
 
+        // Handle resize
+        window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
       } catch (error) {
-        console.error('Mind AR error:', error);
+        console.error('WebXR AR error:', error);
         document.getElementById('loading').innerHTML = `
           <h2>⚠️ AR Not Available</h2>
-          <p>${error.message || 'Mind AR requires custom image targets.'}</p>
-          <p>Redirecting to standard AR...</p>
+          <p>${error.message || 'WebXR AR not supported on this device.'}</p>
+          <p><a href="/ar-static.html?${urlParams.toString()}" style="color: #ff6b6b;">Try marker-based AR instead</a></p>
         `;
-        setTimeout(() => {
-          window.location.href = '/ar-static.html?' + window.location.search.substring(1);
-        }, 3000);
       }
     };
 

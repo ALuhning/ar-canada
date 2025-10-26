@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AR Experience - Discover Canada</title>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #000;
+    }
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+      background-color: #000;
+    }
+    #info {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 10px;
+      z-index: 1000;
+      text-align: center;
+      max-width: 80%;
+    }
+    #info h3 {
+      margin: 0 0 5px 0;
+      font-size: 1.2em;
+    }
+    #info p {
+      margin: 5px 0;
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,0,0,0.9);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      z-index: 1000;
+      font-weight: bold;
+    }
+    .ar-button {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff3333;
+      color: white;
+      padding: 15px 40px;
+      border-radius: 50px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(255,51,51,0.5);
+    }
+    #fallback-msg {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+      z-index: 2000;
+      text-align: center;
+      max-width: 80%;
+    }
+  </style>
+</head>
+<body>
+  <a href="/gallery" class="back-btn">← Back</a>
+
+  <div id="fallback-msg" style="display: none;">
+    <h2>AR Not Supported</h2>
+    <p>Your device doesn't support AR.</p>
+    <p>Switching to standard AR...</p>
+  </div>
+
+  <model-viewer
+    id="ar-viewer"
+    camera-controls
+    disable-zoom
+    auto-rotate
+    shadow-intensity="1"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    ar-scale="auto"
+    alt="Canadian AR Experience"
+  >
+    <button slot="ar-button" class="ar-button">
+      👁️ View in AR
+    </button>
+  </model-viewer>
+
+  <div id="info">
+    <h3><span id="card-emoji">🇨🇦</span> <span id="card-name">Canada</span></h3>
+    <p>Tap "View in AR" to place this in your space</p>
+    <p style="font-size: 0.8em; opacity: 0.6;">Google Model Viewer - No markers needed!</p>
+  </div>
+
+  <script type="module">
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const emoji = urlParams.get('emoji') || '🇨🇦';
+    const name = urlParams.get('name') || 'Canada';
+    
+    // Update text elements
+    document.getElementById('card-emoji').textContent = emoji;
+    document.getElementById('card-name').textContent = name;
+
+    const modelViewer = document.getElementById('ar-viewer');
+    
+    // Create a simple GLB model on the fly (red box)
+    // For now, use a CDN hosted model
+    const modelUrl = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb';
+    modelViewer.src = modelUrl;
+
+    // Check if AR is supported
+    if (!modelViewer.canActivateAR) {
+      setTimeout(() => {
+        document.getElementById('fallback-msg').style.display = 'block';
+        setTimeout(() => {
+          window.location.href = '/ar-static.html?' + window.location.search.substring(1);
+        }, 3000);
+      }, 2000);
+    }
+
+    // Add emoji overlay to the 3D view
+    const addEmojiOverlay = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 512;
+      canvas.height = 512;
+      ctx.font = 'bold 400px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(emoji, 256, 256);
+      
+      // This is a placeholder - Model Viewer doesn't easily support overlays
+      // The model itself would need the emoji baked in
+    };
+  </script>
+</body>
+</html>
