@@ -21,9 +21,9 @@ function ARViewer() {
       
       setLoading(false)
       
-      // Redirect to static AR page which works reliably
+      // Redirect to Mind AR page (more modern than AR.js)
       setTimeout(() => {
-        window.location.href = `/ar-static.html?card=${cardId}&emoji=${encodeURIComponent(data.emoji)}&name=${encodeURIComponent(data.name)}`
+        window.location.href = `/ar-mindar.html?card=${cardId}&emoji=${encodeURIComponent(data.emoji)}&name=${encodeURIComponent(data.name)}`
       }, 500)
     } catch (error) {
       console.error('Error fetching card:', error)

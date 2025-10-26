@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mind AR - Discover Canada</title>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    #container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+    #info {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 10px;
+      z-index: 1000;
+      text-align: center;
+      max-width: 80%;
+    }
+    #info h3 {
+      margin: 0 0 5px 0;
+      font-size: 1.2em;
+    }
+    #info p {
+      margin: 5px 0;
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,0,0,0.9);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      z-index: 1000;
+      font-weight: bold;
+    }
+    #loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+      z-index: 2000;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <a href="/gallery" class="back-btn">← Back</a>
+  
+  <div id="loading">
+    <h2>Loading AR...</h2>
+    <p>Please wait...</p>
+  </div>
+
+  <div id="container"></div>
+
+  <div id="info">
+    <h3><span id="card-emoji">🇨🇦</span> <span id="card-name">Canada</span></h3>
+    <p>📷 Point camera at any flat surface or image</p>
+    <p style="font-size: 0.8em; opacity: 0.6;">Mind AR - No markers needed!</p>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+    
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const emoji = urlParams.get('emoji') || '🇨🇦';
+    const name = urlParams.get('name') || 'Canada';
+    
+    // Update text elements
+    document.getElementById('card-emoji').textContent = emoji;
+    document.getElementById('card-name').textContent = name;
+
+    const start = async () => {
+      try {
+        // Initialize Mind AR without custom targets (easier for demo)
+        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+          container: document.querySelector("#container"),
+          uiLoading: "no",
+          uiScanning: "no",
+          uiError: "no",
+        });
+
+        const {renderer, scene, camera} = mindarThree;
+
+        // Add ambient light
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        scene.add(light);
+
+        // Create anchor (target 0 is default)
+        const anchor = mindarThree.addAnchor(0);
+
+        // Create a red spinning box
+        const geometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+        const material = new THREE.MeshPhongMaterial({color: 0xff0000});
+        const box = new THREE.Mesh(geometry, material);
+        box.position.set(0, 0.15, 0);
+        anchor.group.add(box);
+
+        // Create text sprite for emoji
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = 256;
+        canvas.height = 256;
+        context.font = '200px Arial';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(emoji, 128, 128);
+        
+        const texture = new THREE.CanvasTexture(canvas);
+        const spriteMaterial = new THREE.SpriteMaterial({map: texture});
+        const sprite = new THREE.Sprite(spriteMaterial);
+        sprite.position.set(0, 0.5, 0);
+        sprite.scale.set(0.5, 0.5, 0.5);
+        anchor.group.add(sprite);
+
+        // Animation loop
+        const clock = new THREE.Clock();
+        await mindarThree.start();
+        document.getElementById('loading').style.display = 'none';
+        
+        renderer.setAnimationLoop(() => {
+          const delta = clock.getDelta();
+          box.rotation.y += delta;
+          renderer.render(scene, camera);
+        });
+
+      } catch (error) {
+        console.error('Mind AR error:', error);
+        document.getElementById('loading').innerHTML = `
+          <h2>⚠️ AR Not Available</h2>
+          <p>${error.message || 'Mind AR requires custom image targets.'}</p>
+          <p>Redirecting to standard AR...</p>
+        `;
+        setTimeout(() => {
+          window.location.href = '/ar-static.html?' + window.location.search.substring(1);
+        }, 3000);
+      }
+    };
+
+    start();
+  </script>
+</body>
+</html>
