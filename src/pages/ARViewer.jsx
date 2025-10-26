@@ -32,18 +32,30 @@ function ARViewer() {
     // Load A-Frame
     if (!document.querySelector('script[src*="aframe"]')) {
       const aframeScript = document.createElement('script')
-      aframeScript.src = 'https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe-master.min.js'
+      aframeScript.src = 'https://aframe.io/releases/1.5.0/aframe.min.js'
       document.head.appendChild(aframeScript)
       
       aframeScript.onload = () => {
-        // Load AR.js
-        const arScript = document.createElement('script')
-        arScript.src = 'https://cdn.jsdelivr.net/npm/ar.js@3.4.5/aframe/build/aframe-ar.min.js'
-        document.head.appendChild(arScript)
-        
-        arScript.onload = () => {
-          setArReady(true)
-        }
+        // Load AR.js after a small delay to ensure A-Frame is ready
+        setTimeout(() => {
+          const arScript = document.createElement('script')
+          arScript.src = 'https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'
+          document.head.appendChild(arScript)
+          
+          arScript.onload = () => {
+            setTimeout(() => setArReady(true), 500)
+          }
+          
+          arScript.onerror = () => {
+            console.error('Failed to load AR.js')
+            setArReady(true) // Continue anyway
+          }
+        }, 100)
+      }
+      
+      aframeScript.onerror = () => {
+        console.error('Failed to load A-Frame')
+        setArReady(true) // Continue anyway
       }
     } else {
       setArReady(true)
@@ -80,11 +92,11 @@ function ARViewer() {
 
       <a-scene
         embedded
-        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+        arjs="sourceType: webcam; debugUIEnabled: false;"
         vr-mode-ui="enabled: false"
         renderer="logarithmicDepthBuffer: true;"
       >
-        <a-marker type="pattern" url={card.image_target_url}>
+        <a-marker preset="hiro">
           {/* Default 3D Box - Replace with actual models */}
           <a-box
             position="0 0.5 0"
@@ -155,9 +167,9 @@ function ARViewer() {
         maxWidth: '90%',
         zIndex: 5
       }}>
-        <h3>📷 Point your camera at a marker</h3>
+        <h3>📷 Point your camera at the Hiro marker</h3>
         <p style={{ marginTop: '1rem', opacity: 0.8 }}>
-          Use the printed AR card or display a marker image on another screen
+          Download the Hiro marker at: <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank" style={{ color: '#ff3333' }}>Get Marker</a>
         </p>
         <p style={{ fontSize: '0.85rem', marginTop: '1rem', opacity: 0.6 }}>
           Make sure to allow camera access when prompted
