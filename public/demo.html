@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Demo - Discover Canada</title>
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe-master.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ar.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    
+    .instructions {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      text-align: center;
+      z-index: 1000;
+      max-width: 90%;
+    }
+    
+    .marker-image {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 100px;
+      height: 100px;
+      background: white;
+      padding: 5px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    
+    .marker-image img {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .close-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #FF0000;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="instructions">
+    <h3 style="margin: 0 0 10px 0;">🇨🇦 AR Demo</h3>
+    <p style="margin: 0;">Point your camera at the Hiro marker (bottom right)</p>
+    <small>Or print the marker from the image below</small>
+  </div>
+  
+  <button class="close-btn" onclick="window.location.href='/'">← Back</button>
+  
+  <div class="marker-image">
+    <img src="/markers/hiro.png" alt="Hiro Marker">
+  </div>
+  
+  <a-scene
+    embedded
+    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+    vr-mode-ui="enabled: false"
+  >
+    <!-- Hiro Marker - Simple Demo -->
+    <a-marker preset="hiro">
+      <!-- Spinning Canadian Flag Colors -->
+      <a-box 
+        position="0 0.5 0" 
+        rotation="0 45 0"
+        color="#FF0000"
+        animation="property: rotation; to: 0 405 0; loop: true; dur: 4000"
+      >
+        <a-text
+          value="🍁"
+          align="center"
+          position="0 0 0.51"
+          scale="2 2 1"
+          color="#FFFFFF"
+        ></a-text>
+      </a-box>
+      
+      <!-- White accent boxes -->
+      <a-box 
+        position="-0.5 0.25 0" 
+        scale="0.3 0.3 0.3"
+        color="#FFFFFF"
+        animation="property: position; to: -0.5 0.75 0; dir: alternate; loop: true; dur: 1000"
+      ></a-box>
+      
+      <a-box 
+        position="0.5 0.25 0" 
+        scale="0.3 0.3 0.3"
+        color="#FFFFFF"
+        animation="property: position; to: 0.5 0.75 0; dir: alternate; loop: true; dur: 1000; delay: 500"
+      ></a-box>
+      
+      <!-- Canada Text -->
+      <a-text
+        value="CANADA"
+        align="center"
+        position="0 1.2 0"
+        rotation="0 0 0"
+        scale="0.5 0.5 0.5"
+        color="#FF0000"
+      ></a-text>
+      
+      <!-- Circular particles around -->
+      <a-torus
+        position="0 0.5 0"
+        radius="1"
+        radius-tubular="0.05"
+        color="#FF0000"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 8000"
+      ></a-torus>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+  
+  <script>
+    // Log AR.js version
+    console.log('🇨🇦 AR.js loaded and ready!');
+    
+    // Detect when marker is found
+    const marker = document.querySelector('a-marker');
+    marker.addEventListener('markerFound', () => {
+      console.log('✅ Marker detected!');
+    });
+    
+    marker.addEventListener('markerLost', () => {
+      console.log('❌ Marker lost');
+    });
+  </script>
+</body>
+</html>
