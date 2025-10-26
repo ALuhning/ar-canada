@@ -123,58 +123,23 @@ function ARViewer() {
 
       <a-scene
         embedded
-        arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
+        arjs="sourceType: webcam; debugUIEnabled: true; trackingMethod: best;"
         vr-mode-ui="enabled: false"
-        renderer="logarithmicDepthBuffer: true; antialias: true; alpha: true;"
-        device-orientation-permission-ui="enabled: false"
       >
         <a-marker preset="hiro">
-          {/* Scaled down for better visibility */}
           <a-box
-            position="0 0.25 0"
-            scale="0.5 0.5 0.5"
-            material="color: #FF0000;"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 4000"
+            position="0 0.5 0"
+            scale="1 1 1"
+            material="color: red;"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 3000"
           >
-            <a-text
-              value={card.emoji}
-              align="center"
-              position="0 1.2 0"
-              scale="1.5 1.5 1.5"
-            />
           </a-box>
-          
-          {/* Add specific effects based on card type */}
-          {card.name === 'Maple Leaf' && (
-            <a-entity>
-              <a-plane
-                position="0 0.8 0"
-                rotation="-90 0 0"
-                width="0.8"
-                height="0.8"
-                material="color: #FF0000; opacity: 0.8"
-                animation="property: rotation; to: -90 360 0; dur: 5000; loop: true"
-              />
-            </a-entity>
-          )}
-          
-          {card.name === 'Poutine' && (
-            <a-entity>
-              <a-cylinder
-                position="0 0.3 0"
-                radius="0.3"
-                height="0.3"
-                material="color: #8B4513"
-              />
-              {/* Particle effect simulation */}
-              <a-sphere
-                position="0 0.6 0"
-                radius="0.05"
-                material="color: white; opacity: 0.6"
-                animation="property: position; to: 0 1 0; dur: 2000; loop: true"
-              />
-            </a-entity>
-          )}
+          <a-text
+            value={card.emoji}
+            align="center"
+            position="0 1.5 0"
+            scale="3 3 3"
+          />
         </a-marker>
 
         <a-entity camera></a-entity>
