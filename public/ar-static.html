@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AR Experience - Discover Canada</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    .info {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 10px;
+      z-index: 1000;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      max-width: 80%;
+    }
+    .info h3 {
+      margin: 0 0 5px 0;
+      font-size: 1.2em;
+    }
+    .info p {
+      margin: 5px 0;
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,0,0,0.9);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: Arial, sans-serif;
+      z-index: 1000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <a href="/gallery" class="back-btn">← Back</a>
+  
+  <a-scene
+    embedded
+    arjs="sourceType: webcam; debugUIEnabled: false;"
+    vr-mode-ui="enabled: false"
+  >
+    <a-marker preset="hiro">
+      <a-box
+        position="0 0.5 0"
+        scale="0.8 0.8 0.8"
+        material="color: red;"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 3000"
+      ></a-box>
+      <a-text
+        id="emoji-text"
+        value="🇨🇦"
+        align="center"
+        position="0 1.2 0"
+        scale="2 2 2"
+      ></a-text>
+    </a-marker>
+    
+    <a-entity camera position="0 0 0"></a-entity>
+  </a-scene>
+
+  <div class="info">
+    <h3><span id="card-emoji">🇨🇦</span> <span id="card-name">Canada</span></h3>
+    <p>📷 Point camera at the <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank" style="color: #ff6b6b;">Hiro marker</a></p>
+  </div>
+
+  <script>
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const emoji = urlParams.get('emoji') || '🇨🇦';
+    const name = urlParams.get('name') || 'Canada';
+    
+    // Update text elements
+    document.getElementById('card-emoji').textContent = emoji;
+    document.getElementById('card-name').textContent = name;
+    document.getElementById('emoji-text').setAttribute('value', emoji);
+  </script>
+</body>
+</html>
