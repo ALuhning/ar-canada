@@ -6,27 +6,11 @@ function ARViewer() {
   const [card, setCard] = useState(null)
   const [loading, setLoading] = useState(true)
   const [arReady, setArReady] = useState(false)
-  const [cameraError, setCameraError] = useState(null)
 
   useEffect(() => {
     fetchCard()
-    requestCameraPermission()
     loadARLibraries()
   }, [cardId])
-
-  const requestCameraPermission = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
-      })
-      // Stop the stream immediately - AR.js will handle it
-      stream.getTracks().forEach(track => track.stop())
-      console.log('Camera permission granted')
-    } catch (error) {
-      console.error('Camera permission error:', error)
-      setCameraError('Camera access denied. Please allow camera permissions.')
-    }
-  }
 
   const fetchCard = async () => {
     try {
@@ -55,18 +39,18 @@ function ARViewer() {
         // Load AR.js after a small delay to ensure A-Frame is ready
         setTimeout(() => {
           const arScript = document.createElement('script')
-          arScript.src = 'https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'
+          arScript.src = 'https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js'
           document.head.appendChild(arScript)
           
           arScript.onload = () => {
-            setTimeout(() => setArReady(true), 500)
+            setTimeout(() => setArReady(true), 1000)
           }
           
           arScript.onerror = () => {
             console.error('Failed to load AR.js')
             setArReady(true) // Continue anyway
           }
-        }, 100)
+        }, 200)
       }
       
       aframeScript.onerror = () => {
@@ -78,25 +62,13 @@ function ARViewer() {
     }
   }
 
-  if (cameraError) {
-    return (
-      <div className="loading">
-        <h2>⚠️ Camera Access Required</h2>
-        <p>{cameraError}</p>
-        <Link to="/gallery" className="btn" style={{ marginTop: '2rem' }}>
-          Back to Gallery
-        </Link>
-      </div>
-    )
-  }
-
   if (loading || !arReady) {
     return (
       <div className="loading">
         <div className="spinner"></div>
         <p>Loading AR experience...</p>
         <p style={{ fontSize: '0.8rem', marginTop: '1rem', opacity: 0.7 }}>
-          Make sure to allow camera access when prompted
+          Allow camera access when prompted
         </p>
       </div>
     )
