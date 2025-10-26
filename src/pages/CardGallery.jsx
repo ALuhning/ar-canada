@@ -22,8 +22,11 @@ function CardGallery() {
   }
 
   const generateQRCodeURL = (cardId) => {
-    const arURL = `${window.location.origin}/ar/${cardId}`
-    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(arURL)}`
+    // Use the actual deployment URL for QR codes
+    const baseURL = window.location.origin
+    const arURL = `${baseURL}/ar/${cardId}`
+    // Add error correction and larger size for better scanning
+    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=H&data=${encodeURIComponent(arURL)}`
   }
 
   if (loading) {
@@ -58,7 +61,7 @@ function CardGallery() {
                 <img 
                   src={generateQRCodeURL(card.id)} 
                   alt={`QR Code for ${card.name}`}
-                  style={{ width: '150px', height: '150px', borderRadius: '8px' }}
+                  style={{ width: '200px', height: '200px', borderRadius: '8px' }}
                 />
               </div>
 
