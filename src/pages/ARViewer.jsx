@@ -20,11 +20,26 @@ function ARViewer() {
     // Timeout after 5 seconds
     setTimeout(() => {
       clearInterval(checkLibraries)
-      setArReady(true)
+      if (!arReady) {
+        console.log('AR libraries loaded with timeout')
+        setArReady(true)
+      }
     }, 5000)
     
     return () => clearInterval(checkLibraries)
   }, [cardId])
+
+  useEffect(() => {
+    // Force A-Frame to process the scene after it's added to DOM
+    if (arReady && card) {
+      setTimeout(() => {
+        const scene = document.querySelector('a-scene')
+        if (scene && scene.hasLoaded) {
+          console.log('A-Frame scene loaded successfully')
+        }
+      }, 1000)
+    }
+  }, [arReady, card])
 
   const fetchCard = async () => {
     try {
@@ -82,20 +97,19 @@ function ARViewer() {
         <a-marker preset="hiro">
           <a-box
             position="0 0.5 0"
-            scale="1 1 1"
+            scale="0.8 0.8 0.8"
             material="color: red;"
             animation="property: rotation; to: 0 360 0; loop: true; dur: 3000"
-          >
-          </a-box>
+          ></a-box>
           <a-text
             value={card.emoji}
             align="center"
-            position="0 1.5 0"
-            scale="3 3 3"
-          />
+            position="0 1.2 0"
+            scale="2 2 2"
+          ></a-text>
         </a-marker>
 
-        <a-entity camera></a-entity>
+        <a-entity camera position="0 0 0"></a-entity>
       </a-scene>
 
       <div className="ar-caption">

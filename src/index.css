@@ -166,6 +166,20 @@ body {
   width: 100%;
   height: 100vh;
   background: black;
+  overflow: hidden;
+}
+
+.ar-container a-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.ar-container canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .ar-overlay {
