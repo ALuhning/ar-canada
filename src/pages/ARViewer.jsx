@@ -6,11 +6,27 @@ function ARViewer() {
   const [card, setCard] = useState(null)
   const [loading, setLoading] = useState(true)
   const [arReady, setArReady] = useState(false)
+  const [cameraError, setCameraError] = useState(null)
 
   useEffect(() => {
     fetchCard()
+    requestCameraPermission()
     loadARLibraries()
   }, [cardId])
+
+  const requestCameraPermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      })
+      // Stop the stream immediately - AR.js will handle it
+      stream.getTracks().forEach(track => track.stop())
+      console.log('Camera permission granted')
+    } catch (error) {
+      console.error('Camera permission error:', error)
+      setCameraError('Camera access denied. Please allow camera permissions.')
+    }
+  }
 
   const fetchCard = async () => {
     try {
@@ -62,11 +78,26 @@ function ARViewer() {
     }
   }
 
+  if (cameraError) {
+    return (
+      <div className="loading">
+        <h2>⚠️ Camera Access Required</h2>
+        <p>{cameraError}</p>
+        <Link to="/gallery" className="btn" style={{ marginTop: '2rem' }}>
+          Back to Gallery
+        </Link>
+      </div>
+    )
+  }
+
   if (loading || !arReady) {
     return (
       <div className="loading">
         <div className="spinner"></div>
         <p>Loading AR experience...</p>
+        <p style={{ fontSize: '0.8rem', marginTop: '1rem', opacity: 0.7 }}>
+          Make sure to allow camera access when prompted
+        </p>
       </div>
     )
   }
@@ -92,9 +123,10 @@ function ARViewer() {
 
       <a-scene
         embedded
-        arjs="sourceType: webcam; debugUIEnabled: false;"
+        arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
         vr-mode-ui="enabled: false"
-        renderer="logarithmicDepthBuffer: true;"
+        renderer="logarithmicDepthBuffer: true; antialias: true; alpha: true;"
+        device-orientation-permission-ui="enabled: false"
       >
         <a-marker preset="hiro">
           {/* Scaled down for better visibility */}
@@ -154,26 +186,8 @@ function ARViewer() {
         <p style={{ fontSize: '0.9rem', marginTop: '0.5rem', opacity: 0.7 }}>
           👁️ {card.views_count} views
         </p>
-      </div>
-
-      <div style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        background: 'rgba(0,0,0,0.8)',
-        padding: '2rem',
-        borderRadius: '12px',
-        textAlign: 'center',
-        maxWidth: '90%',
-        zIndex: 5
-      }}>
-        <h3>📷 Point your camera at the Hiro marker</h3>
-        <p style={{ marginTop: '1rem', opacity: 0.8 }}>
-          Download the Hiro marker at: <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank" style={{ color: '#ff3333' }}>Get Marker</a>
-        </p>
-        <p style={{ fontSize: '0.85rem', marginTop: '1rem', opacity: 0.6 }}>
-          Make sure to allow camera access when prompted
+        <p style={{ fontSize: '0.85rem', marginTop: '1rem', background: 'rgba(255,255,255,0.1)', padding: '0.5rem', borderRadius: '4px' }}>
+          📷 Point camera at the <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank" rel="noopener noreferrer" style={{ color: '#ff6b6b', textDecoration: 'underline' }}>Hiro marker</a>
         </p>
       </div>
     </div>
