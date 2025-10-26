@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AR Test - Discover Canada</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    .info {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 10px;
+      z-index: 1000;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,0,0,0.8);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: Arial, sans-serif;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <a href="/gallery" class="back-btn">← Back</a>
+  
+  <a-scene
+    embedded
+    arjs="sourceType: webcam; debugUIEnabled: false;"
+    vr-mode-ui="enabled: false"
+  >
+    <a-marker preset="hiro">
+      <a-box
+        position="0 0.5 0"
+        material="color: red;"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 3000"
+      ></a-box>
+      <a-text
+        value="🇨🇦"
+        align="center"
+        position="0 1.5 0"
+        scale="3 3 3"
+      ></a-text>
+    </a-marker>
+    
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <div class="info">
+    📷 Point camera at the <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank" style="color: #ff6b6b;">Hiro marker</a>
+  </div>
+</body>
+</html>

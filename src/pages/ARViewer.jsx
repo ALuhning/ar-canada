@@ -9,7 +9,21 @@ function ARViewer() {
 
   useEffect(() => {
     fetchCard()
-    loadARLibraries()
+    // Check if AR libraries are loaded (they're in index.html now)
+    const checkLibraries = setInterval(() => {
+      if (window.AFRAME && window.AFRAME.components['arjs']) {
+        setArReady(true)
+        clearInterval(checkLibraries)
+      }
+    }, 100)
+    
+    // Timeout after 5 seconds
+    setTimeout(() => {
+      clearInterval(checkLibraries)
+      setArReady(true)
+    }, 5000)
+    
+    return () => clearInterval(checkLibraries)
   }, [cardId])
 
   const fetchCard = async () => {
@@ -25,40 +39,6 @@ function ARViewer() {
     } catch (error) {
       console.error('Error fetching card:', error)
       setLoading(false)
-    }
-  }
-
-  const loadARLibraries = () => {
-    // Load A-Frame
-    if (!document.querySelector('script[src*="aframe"]')) {
-      const aframeScript = document.createElement('script')
-      aframeScript.src = 'https://aframe.io/releases/1.5.0/aframe.min.js'
-      document.head.appendChild(aframeScript)
-      
-      aframeScript.onload = () => {
-        // Load AR.js after a small delay to ensure A-Frame is ready
-        setTimeout(() => {
-          const arScript = document.createElement('script')
-          arScript.src = 'https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js'
-          document.head.appendChild(arScript)
-          
-          arScript.onload = () => {
-            setTimeout(() => setArReady(true), 1000)
-          }
-          
-          arScript.onerror = () => {
-            console.error('Failed to load AR.js')
-            setArReady(true) // Continue anyway
-          }
-        }, 200)
-      }
-      
-      aframeScript.onerror = () => {
-        console.error('Failed to load A-Frame')
-        setArReady(true) // Continue anyway
-      }
-    } else {
-      setArReady(true)
     }
   }
 
