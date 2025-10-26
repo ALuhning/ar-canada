@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "server": "node backend/server.js",
     "start": "node backend/database.js && node backend/server.js",
+    "start:fullstack": "node backend/database.js && node backend/server-fullstack.js",
     "railway:init": "node backend/database.js"
   },
   "dependencies": {
