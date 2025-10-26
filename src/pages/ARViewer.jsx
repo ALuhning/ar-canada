@@ -97,17 +97,18 @@ function ARViewer() {
         renderer="logarithmicDepthBuffer: true;"
       >
         <a-marker preset="hiro">
-          {/* Default 3D Box - Replace with actual models */}
+          {/* Scaled down for better visibility */}
           <a-box
-            position="0 0.5 0"
+            position="0 0.25 0"
+            scale="0.5 0.5 0.5"
             material="color: #FF0000;"
             animation="property: rotation; to: 0 360 0; loop: true; dur: 4000"
           >
             <a-text
               value={card.emoji}
               align="center"
-              position="0 1.5 0"
-              scale="2 2 2"
+              position="0 1.2 0"
+              scale="1.5 1.5 1.5"
             />
           </a-box>
           
@@ -115,12 +116,12 @@ function ARViewer() {
           {card.name === 'Maple Leaf' && (
             <a-entity>
               <a-plane
-                position="0 2 0"
+                position="0 0.8 0"
                 rotation="-90 0 0"
-                width="2"
-                height="2"
+                width="0.8"
+                height="0.8"
                 material="color: #FF0000; opacity: 0.8"
-                animation="property: position; to: 0 0 0; dur: 3000; loop: true"
+                animation="property: rotation; to: -90 360 0; dur: 5000; loop: true"
               />
             </a-entity>
           )}
@@ -128,17 +129,17 @@ function ARViewer() {
           {card.name === 'Poutine' && (
             <a-entity>
               <a-cylinder
-                position="0 0.5 0"
-                radius="0.5"
-                height="0.5"
+                position="0 0.3 0"
+                radius="0.3"
+                height="0.3"
                 material="color: #8B4513"
               />
               {/* Particle effect simulation */}
               <a-sphere
-                position="0 1 0"
-                radius="0.1"
+                position="0 0.6 0"
+                radius="0.05"
                 material="color: white; opacity: 0.6"
-                animation="property: position; to: 0 2 0; dur: 2000; loop: true"
+                animation="property: position; to: 0 1 0; dur: 2000; loop: true"
               />
             </a-entity>
           )}
