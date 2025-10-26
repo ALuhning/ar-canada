@@ -17,7 +17,7 @@
     }
     #info {
       position: fixed;
-      bottom: 20px;
+      top: 80px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(0,0,0,0.9);
@@ -115,6 +115,24 @@
           optionalFeatures: ['dom-overlay'],
           domOverlay: { root: document.body }
         });
+        
+        // Style the AR button to make it more prominent
+        arButton.style.position = 'fixed';
+        arButton.style.bottom = '20px';
+        arButton.style.left = '50%';
+        arButton.style.transform = 'translateX(-50%)';
+        arButton.style.padding = '20px 50px';
+        arButton.style.fontSize = '1.3em';
+        arButton.style.fontWeight = 'bold';
+        arButton.style.backgroundColor = '#ff3333';
+        arButton.style.color = 'white';
+        arButton.style.border = 'none';
+        arButton.style.borderRadius = '50px';
+        arButton.style.cursor = 'pointer';
+        arButton.style.zIndex = '5000';
+        arButton.style.boxShadow = '0 4px 20px rgba(255, 51, 51, 0.6)';
+        arButton.textContent = '🚀 START AR';
+        
         document.body.appendChild(arButton);
 
         // Add lights
