@@ -123,8 +123,9 @@ function ARViewer() {
 
       <a-scene
         embedded
-        arjs="sourceType: webcam; debugUIEnabled: true; trackingMethod: best;"
+        arjs="sourceType: webcam; debugUIEnabled: false;"
         vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true;"
       >
         <a-marker preset="hiro">
           <a-box
